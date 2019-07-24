@@ -4,10 +4,12 @@ const open = require('open');
 const app = express();
 const db = require('./config/database');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use('/static', express.static('public'));
 app.use('/books', require('./routes/books'));
-app.set('view engine', 'pug');
 
+app.set('view engine', 'pug');
 app.get('/', (req, res) => res.redirect(`/books`));
 
 db.authenticate()
