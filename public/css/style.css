@@ -95,3 +95,9 @@ input[type=text] {
 .error {
   color: rgb(236, 15, 15);
 }
+
+input[placeholder="Required"]::placeholder {
+  text-align: right;
+  font-size: .75em;
+  font-style: italic;
+}

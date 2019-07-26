@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const Books = require('../models/Books');
 
-
 router.get('/', (req, res) => 
   Books.findAll()
     .then(books => {
@@ -24,12 +23,17 @@ router.post('/new', (req, res) => {
     author,
     genre,
     year
-  })
-  .then(() => res.redirect('/books'))
-  .catch(err => console.error(err));
+  }).then(() => res.redirect('/books'))
+    .catch(err => {
+      if (err.name === 'SequelizeValidationError') {
+        res.render('new-book', {
+          errors: err.errors
+        });
+      } else {
+        throw err;
+      }
+    });
 
 });
 
 module.exports = router;
-
-

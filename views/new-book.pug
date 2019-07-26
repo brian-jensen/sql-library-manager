@@ -4,23 +4,24 @@ block title
 block content
   h1 New Book
   form(action="/books/new" method="POST")
+    if(errors)
+      h2.error Oops an error occurred!
+      ul.error
+        each error in errors
+          li= error.message
     p
       label(for="title") Title
-      input(name="title" type="text" id="title" value=`${title}`)
+      input(name="title" type="text" id="title" placeholder="Required")
     p
       label(for="author") Author
-      input(name="author" type="text" id="author" value=`${author}`)
+      input(name="author" type="text" id="author" placeholder="Required")
     p
       label(for="genre") Genre
-      input(name="genre" type="text" id="genre" value=`${genre}`)
+      input(name="genre" type="text" id="genre")
     p
       label(for="year") Year
-      input(name="year" type="text" id="year" value=`${year}`)
+      input(name="year" type="text" id="year")
     p
       input(type="submit" value="Create New Book")
     p
       a(class="button" href="/") Cancel
-    h2(class="error") Oooops!
-      ul(class="error")
-        li Author is required
-        li Name is required
