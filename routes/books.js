@@ -17,17 +17,44 @@ router.get('/new', (req, res) => res.render('new-book'));
 
 router.post('/new', (req, res) => {
   let { title, author, genre, year } = req.body;
-
-  Books.create({
-    title,
-    author,
-    genre,
-    year
-  }).then(() => res.redirect('/books'))
+  Books.create({ title, author, genre, year })
+    .then(() => res.redirect('/books'))
     .catch(err => {
       if (err.name === 'SequelizeValidationError') {
         res.render('new-book', {
           errors: err.errors
+        });
+      } else {
+        throw err;
+      }
+    });
+});
+
+// get /books/:id - Shows book detail form.
+router.get('/:id', (req, res) => {
+  Books.findByPk(req.params.id)
+    .then(book => {
+      res.render('update-book', {
+        book
+      });
+    });
+});
+// post /books/:id - Updates book info in the database.
+router.post('/:id', (req, res) => {
+  Books.findByPk(req.params.id)
+    .then(book => {
+      return book.update(req.body);
+    })
+    .then(book => {
+      res.redirect(`/books/${book.id}`);
+    })
+    .catch(err => {
+      if (err.name === 'SequelizeValidationError') {
+        let book = Books.build(req.body);
+        book.id = req.params.id;
+        res.render('update-book', { 
+          book,
+          errors: err.errors 
         });
       } else {
         throw err;

@@ -4,11 +4,7 @@ block title
 block content
   h1 New Book
   form(action="/books/new" method="POST")
-    if(errors)
-      h2.error Oops an error occurred!
-      ul.error
-        each error in errors
-          li= error.message
+    include form-error.pug
     p
       label(for="title") Title
       input(name="title" type="text" id="title" placeholder="Required")
