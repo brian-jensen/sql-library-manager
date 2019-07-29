@@ -5,14 +5,35 @@ const Books = require('../models/Books');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-router.get('/', (req, res) => 
+router.get('/', (req, res) => {
   Books.findAll()
   .then(books => 
     res.render('index', {
       books
     }))
-  .catch(err => console.error(err))
-);
+  .catch(err => console.error(err));
+});
+
+router.get('/search', (req, res) => {
+  let { term } = req.query;
+  term = term.toLowerCase();
+  let match = { [Op.like]: `%${term}%` };
+  Books.findAll({
+    where: {
+      [Op.or]: [
+        { title: match },
+        { author: match },
+        { genre: match },
+        { year: match },
+      ]
+    }
+  })
+  .then(books => 
+    res.render('index', {
+      books
+    }))
+  .catch(err => console.error(err));
+});
 
 // Renders form to create a new book.
 router.get('/new', (req, res) => res.render('new-book'));
@@ -33,7 +54,6 @@ router.post('/new', (req, res) => {
   });
 });
 
-// get /books/:id - Shows book detail form.
 router.get('/:id', (req, res) => {
   Books.findByPk(req.params.id)
   .then(book => {
@@ -42,7 +62,7 @@ router.get('/:id', (req, res) => {
     });
   });
 });
-// post /books/:id - Updates book info in the database.
+
 router.post('/:id', (req, res) => {
   Books.findByPk(req.params.id)
   .then(book => {
@@ -65,7 +85,7 @@ router.post('/:id', (req, res) => {
     }
   });
 });
-// post /books/:id/delete
+
 router.post('/:id/delete', (req, res) => {
   Books.findByPk(req.params.id)
   .then(book => {
