@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
   }
   let match = { [Op.like]: `%${search}%` };
   Books.findAndCountAll({
-    where: {
+     where: {
       [Op.or]: [
         { title: match },
         { author: match },
@@ -24,6 +24,9 @@ router.get('/', (req, res) => {
         { year: match },
       ]
     },
+    order: [
+      ['title', 'ASC']
+    ],
     limit: perPage,
     offset: req.query.page ? Number(req.query.page - 1) * perPage : 0
   })
@@ -73,9 +76,7 @@ router.post('/:id', (req, res) => {
   .then(book => {
     return book.update(req.body);
   })
-  .then(book => {
-    res.redirect(`/books/${book.id}`);
-  })
+  .then(() => res.redirect('/books'))
   .catch(err => {
     let book = Books.build(req.body);
     book.id = req.params.id;
