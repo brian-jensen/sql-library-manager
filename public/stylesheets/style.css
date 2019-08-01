@@ -106,3 +106,27 @@ input[type="search"]::placeholder {
   font-size: .75em;
   font-style: italic;
 }
+
+input[class="delete"] {
+  background: #980124;
+}
+
+input[class="delete"]:hover {
+  background: #bf012d;
+}
+
+.pagination {
+  margin-top: 25px;
+}
+
+.page {
+  margin-right: 10px;
+}
+
+.page:last-of-type {
+  margin-right: 0;
+}
+
+table {
+  margin: 25px 0;
+}
