@@ -10,13 +10,14 @@ let perPage = 5;
 // Gets /books route and shows the full list of books in a 5 items per page paginated format.
 // Listens for user search query, searches all columns, search is case insensitive, works for partial search query matches.
 router.get('/', (req, res) => {
+  if(req.query.page == null) search = '';
   if(req.query.search) {
     search = req.query.search;
     search = search.toLowerCase();
   }
   let match = { [Op.like]: `%${search}%` };
   Books.findAndCountAll({
-     where: {
+    where: {
       [Op.or]: [
         { title: match },
         { author: match },
@@ -42,12 +43,12 @@ router.get('/', (req, res) => {
 // Renders form to create a new book.
 router.get('/new', (req, res) => res.render('new-book'));
 
-// Posts users create a new book form data to database
+// Posts the users "create a new book" form data to database
 router.post('/new', (req, res) => {
   search = '';
   let { title, author, genre, year } = req.body;
   Books.create({ title, author, genre, year })
-  .then(() => res.redirect('/books'))
+  .then(() => res.redirect('/'))
   .catch(err => {
     // If title and/or author form fields are empty, form will not submit and page shows friendly error message.
     if (err.name === 'SequelizeValidationError') {
@@ -76,7 +77,7 @@ router.post('/:id', (req, res) => {
   .then(book => {
     return book.update(req.body);
   })
-  .then(() => res.redirect('/books'))
+  .then(() => res.redirect('/'))
   .catch(err => {
     let book = Books.build(req.body);
     book.id = req.params.id;
@@ -100,7 +101,7 @@ router.post('/:id/delete', (req, res) => {
   })
   .then(() => {
     search = '';
-    res.redirect('/books');
+    res.redirect('/');
   })
   .catch(err => { throw err; });
 });
